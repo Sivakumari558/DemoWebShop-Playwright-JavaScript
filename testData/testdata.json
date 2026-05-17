@@ -1,0 +1,47 @@
+{
+  "baseUrl": "https://demowebshop.tricentis.com/login",
+
+  "validUser": {
+    "email": "yarramsivakumari123@gmail.com",
+    "password": "Kumari@123"  
+  },
+
+  "invalidUser": {
+    "email": "wronguser@gmail.com",
+    "password": "wrongpassword"
+  },
+
+  "registerUser": {
+    "gender": "Female",
+    "firstName": "Sivakumari",
+    "lastName": "Yarram",
+    "password": "Kumari@123",
+    "confirmPassword": "Kumari@123"
+  },
+
+  "invalidEmail": "invalidemail",
+
+  "invalidPassword": "Wrong@123",
+
+  "searchProduct": "Computers",
+
+  "PRODUCT_NAME": "Build your own cheap computer",
+
+  "couponCode": "INVALIDCODE",
+
+  "giftCardCode": "TEST123",
+
+  "shippingAddress": {
+    "country": "India",
+    "state": "Other (Non US)",
+    "postalCode": "600119"
+  },
+
+  "checkoutAddress": {
+  "country": "India",
+  "city": "Chennai",
+  "address1": "OMR Road",
+  "postalCode": "600119",
+  "phoneNumber": "9876543210"
+   }
+}
