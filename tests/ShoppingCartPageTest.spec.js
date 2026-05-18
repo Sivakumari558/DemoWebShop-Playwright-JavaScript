@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 const { LoginPage } = require('../DemoWebShop_Pages/LoginPage');
 const { HomePage } = require('../DemoWebShop_Pages/HomePage');
-const { ShoppingCartPage } = require('../DemoWebShop_Pages/ShoppingCartPage');
+const { ShoppingCart } = require('../DemoWebShop_Pages/ShoppingCartPage');
 
 const testData = require('../testData/testdata.json');
 

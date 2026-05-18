@@ -1,4 +1,4 @@
-class ThankYouPage {
+class ThankyouPage {
     constructor(page) {
         this.page = page;
         this.successMessage = page.locator('.title').first();
@@ -60,4 +60,4 @@ class ThankYouPage {
 
 }
 
-module.exports = { ThankYouPage };
+module.exports = { ThankyouPage };
