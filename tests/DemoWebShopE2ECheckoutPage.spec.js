@@ -19,7 +19,7 @@ test.describe('Demo Web Shop E2E Test Suite', () => {
     let homePage;
     let shoppingCart;
     let checkoutPage;
-    let ThankyouPage;
+    let thankyouPage;
 
     test.beforeEach(async ({ page }) => {
 
@@ -27,7 +27,7 @@ test.describe('Demo Web Shop E2E Test Suite', () => {
         homePage = new HomePage(page);
         shoppingCart = new ShoppingCart(page);
         checkoutPage = new CheckoutPage(page);
-        ThankyouPage = new ThankyouPage(page);
+        thankyouPage = new ThankyouPage(page);
         await loginPage.goToPage();
         await loginPage.validLogin(testData.validUser.email, testData.validUser.password);
         await page.waitForLoadState('networkidle');
