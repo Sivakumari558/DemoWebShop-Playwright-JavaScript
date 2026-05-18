@@ -19,7 +19,7 @@ test.describe('Thank You Page Test Suite', () => {
     let homePage;
     let shoppingCart;
     let checkoutPage;
-    let thankYouPage;
+    let thankyouPage;
 
     test.beforeEach(async ({ page }) => {
 
@@ -27,7 +27,7 @@ test.describe('Thank You Page Test Suite', () => {
         homePage = new HomePage(page);
         shoppingCart = new ShoppingCart(page);
         checkoutPage = new CheckoutPage(page);
-        thankYouPage = new ThankYouPage(page);
+        thankyouPage = new ThankyouPage(page);
 
         // Open login page
         await loginPage.goToPage();
