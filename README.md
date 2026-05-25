@@ -62,8 +62,8 @@ DemoWebShopFramework/
 │   ├── LoginPageTest.spec.js
 │   ├── ShoppingCartPageTest.spec.js
 │   ├── CheckoutPageTest.spec.js
-|   ├── ThankYouPage.spec.js
-│   └── DemoWebShopE2ECheckout.spec.js
+|   ├── ThankyouPage.spec.js
+│   └── DemoWebShop_E2E_Tests.spec.js
 │
 ├── testData/
 │   └── testdata.json
