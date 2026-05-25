@@ -102,28 +102,77 @@ class ShoppingCart {
         return (await this.couponMessage.textContent()).trim();
     }
 
-    async checkOut() {
+    // async checkOut() {
+    //     await this.page.waitForURL('**/cart', { timeout: 30000 });
+    //     await this.page.waitForLoadState('networkidle');
+    //     const notificationClose = this.page.locator('.bar-notification .close');
+    //     if (await notificationClose.count() > 0 && await notificationClose.first().isVisible()) {
+    //         await notificationClose.first().click();
+    //     }
+    //     const itemCount = await this.page.locator('.cart-item-row').count();
+    //     if (itemCount === 0) throw new Error('Cannot checkout — cart is empty');
+    //     const termsCheckbox = this.page.locator('#termsofservice');
+    //     await termsCheckbox.waitFor({ state: 'visible', timeout: 20000 });
+    //     await termsCheckbox.scrollIntoViewIfNeeded();
+    //     if (!(await termsCheckbox.isChecked())) {
+    //         await termsCheckbox.click({ force: true });
+    //     }
+    //     const checkoutBtn = this.page.locator('#checkout');
+    //     await checkoutBtn.waitFor({ state: 'visible', timeout: 20000 });
+    //     await checkoutBtn.scrollIntoViewIfNeeded();
+    //     await checkoutBtn.click({ force: true });
+    //     await this.page.waitForURL('**/onepagecheckout', { timeout: 45000 });
+    //     await this.page.waitForLoadState('networkidle');
+    // }
+
+async checkOut() {
         await this.page.waitForURL('**/cart', { timeout: 30000 });
         await this.page.waitForLoadState('networkidle');
-        const notificationClose = this.page.locator('.bar-notification .close');
-        if (await notificationClose.count() > 0 && await notificationClose.first().isVisible()) {
-            await notificationClose.first().click();
+ 
+        // Step 1: Wait for ANY notification bar to fully disappear.
+        // This is the root cause of the click timeout — the bar-notification
+        // floats over the checkout button and blocks pointer events even
+        // after the close button is clicked, because it animates out slowly.
+        const notificationBar = this.page.locator('.bar-notification');
+        if (await notificationBar.count() > 0) {
+            // Try to close it
+            const closeBtn = this.page.locator('.bar-notification .close');
+            if (await closeBtn.count() > 0 && await closeBtn.first().isVisible()) {
+                await closeBtn.first().click();
+            }
+            // Wait until fully gone from the DOM / hidden — not just clicked
+            await notificationBar.waitFor({ state: 'hidden', timeout: 10000 })
+                .catch(() => {}); // non-fatal if it was never there
         }
+ 
+        // Step 2: Guard — cart must not be empty
         const itemCount = await this.page.locator('.cart-item-row').count();
-        if (itemCount === 0) throw new Error('Cannot checkout — cart is empty');
-        const termsCheckbox = this.page.locator('#termsofservice');
-        await termsCheckbox.waitFor({ state: 'visible', timeout: 20000 });
-        await termsCheckbox.scrollIntoViewIfNeeded();
-        if (!(await termsCheckbox.isChecked())) {
-            await termsCheckbox.click({ force: true });
+        if (itemCount === 0) {
+            throw new Error('checkOut(): cart is empty — nothing to checkout');
         }
-        const checkoutBtn = this.page.locator('#checkout');
-        await checkoutBtn.waitFor({ state: 'visible', timeout: 20000 });
-        await checkoutBtn.scrollIntoViewIfNeeded();
-        await checkoutBtn.click({ force: true });
-        await this.page.waitForURL('**/onepagecheckout', { timeout: 45000 });
+ 
+        // Step 3: Check the terms checkbox via JavaScript to bypass any
+        // remaining overlay issues on the checkbox itself
+        await this.page.evaluate(() => {
+            const cb = document.querySelector('#termsofservice');
+            if (cb && !cb.checked) cb.click();
+        });
+ 
+        // Small pause to let the checkbox state register in the page JS
+        await this.page.waitForTimeout(500);
+ 
+        // Step 4: Click the checkout button via JavaScript.
+        // Using evaluate() bypasses Playwright's actionability checks
+        // entirely, which is what prevents the 20 000 ms timeout when
+        // the button is found but the click action keeps being blocked.
+        await this.page.evaluate(() => {
+            document.querySelector('#checkout').click();
+        });
+ 
+        await this.page.waitForURL('**/onepagecheckout', { timeout: 30000 });
         await this.page.waitForLoadState('networkidle');
     }
+
 
     async clearCartIfNotEmpty() {
         await this.page.goto('https://demowebshop.tricentis.com/cart');
